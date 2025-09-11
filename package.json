@@ -12,6 +12,7 @@
   },
   "scripts": {
     "all:parallel": "concurrently --group --prefix=none",
+    "build": "ncc build -o dist src/main.ts",
     "eslint:run": "NODE_OPTIONS=--max-old-space-size=3072 eslint --max-warnings=0",
     "lint": "pnpm run all:parallel 'pnpm:lint:check:*'",
     "lint:check:eslint": "pnpm run eslint:run .",
@@ -34,6 +35,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.35.0",
+    "@vercel/ncc": "^0.38.3",
     "concurrently": "^9.2.1",
     "eslint": "^9.35.0",
     "globals": "^16.4.0",
