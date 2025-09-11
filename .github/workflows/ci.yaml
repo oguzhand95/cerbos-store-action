@@ -43,3 +43,7 @@ jobs:
             git status -vv
             exit 1
           fi
+      
+      - name: Test
+        run: |
+          pnpm run test
