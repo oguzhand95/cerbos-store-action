@@ -27459,7 +27459,7 @@ var __webpack_exports__ = {};
 // SPDX-License-Identifier: Apache-2.0
 
 async function run() {
-    _actions_core__WEBPACK_IMPORTED_MODULE_0__.info(`Cerbos Action`);
+    _actions_core__WEBPACK_IMPORTED_MODULE_0__.info(`Cerbos Store Action`);
 }
 run();
 

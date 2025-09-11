@@ -1,0 +1,12 @@
+name: 'Cerbos Store Action'
+description: 'Uploads policies to Cerbos Hub stores'
+author: 'Cerbos'
+
+inputs:
+  github_token:
+    description: 'The GitHub token to use'
+    required: false
+
+runs:
+  using: 'node20'
+  main: './dist/index.js'
