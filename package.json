@@ -10,6 +10,14 @@
     "node": "22.19.0",
     "pnpm": "10.15.1"
   },
+  "scripts": {
+    "all:parallel": "concurrently --group --prefix=none",
+    "lint": "pnpm run all:parallel 'pnpm:lint:check:*'",
+    "lint:check": "pnpm run lint:check:prettier",
+    "lint:check:prettier": "prettier --check .",
+    "lint:fix": "pnpm run lint:fix:prettier",
+    "lint:fix:prettier": "prettier --write ."
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/cerbos/cerbos-action.git"
@@ -21,5 +29,9 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@actions/core": "^1.11.1"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "prettier": "^3.6.2"
   }
 }
