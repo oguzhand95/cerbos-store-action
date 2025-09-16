@@ -87,7 +87,7 @@ export default async (args: AssetArgs): Promise<Asset> => {
           version: args.version,
           url: asset.browser_download_url
         })
-        core.info(`The asset is resolved to ${a}`)
+        core.info(`The asset is resolved to ${JSON.stringify(a)}`)
 
         return a
       }

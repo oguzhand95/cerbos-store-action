@@ -24,19 +24,20 @@ const ValidateArgs = (args: DownloadArgs): DownloadArgs => {
 export default async (args: DownloadArgs): Promise<void> => {
   args = ValidateArgs(args)
 
-  const binaries = []
+  const binariesToDownload = []
   for (const binary of args.binaries) {
     const cached = tc.find(binary, args.asset.version)
-    if (cached !== '' || cached !== undefined || cached !== null) {
-      core.info(`Found the cached binary ${binary} at ${cached}.`)
+    if (cached !== '' && cached !== undefined && cached !== null) {
+      core.info(`Found the tool cached binary ${binary} at ${cached}`)
       core.addPath(cached)
     } else {
-      binaries.push(binary)
+      core.info(`Failed to find the tool cached binary ${binary}`)
+      binariesToDownload.push(binary)
     }
   }
 
-  if (binaries.length == args.binaries.length) {
-    core.info(`Found all binaries in the cache.`)
+  if (binariesToDownload.length === 0) {
+    core.info(`Found all binaries in the tool cache. Skipping...`)
     return
   }
 
@@ -51,40 +52,41 @@ export default async (args: DownloadArgs): Promise<void> => {
     process.exit(1)
   }
 
-  const cachedFiles = []
+  const cachedBinaryPaths = []
   try {
     core.info(
-      `Adding the following binaries to the cache if exists in the downloaded asset: ${binaries}`
+      `Adding the following binaries to the tool cache if exists in the downloaded asset: ${binariesToDownload}`
     )
-    for (const binary of binaries) {
+    for (const binary of binariesToDownload) {
       const binaryPath = path.join(extractedAsset, binary)
-      const cachedFile = await tc.cacheFile(
+      const cachedBinaryPath = await tc.cacheFile(
         binaryPath,
         binary,
         binary,
         args.asset.version
       )
-      cachedFiles.push(cachedFile)
+      cachedBinaryPaths.push(cachedBinaryPath)
 
-      core.info(`The binary ${binary} at ${cachedFile} is added to cache`)
+      core.info(
+        `The binary ${binary} at ${cachedBinaryPath} is added to tool cache`
+      )
     }
   } catch (error) {
     core.setFailed(
-      `Error occured while adding binaries to tooling cache: ${error}`
+      `Error occured while adding binaries to tool cache: ${error}`
     )
     process.exit(1)
   }
 
   try {
-    core.info('Adding cache files to PATH')
-
-    for (const cachedFile of cachedFiles) {
-      core.addPath(cachedFile)
-
-      core.info(`Added the cached file at ${cachedFile} to PATH`)
+    for (const cachedBinaryPath of cachedBinaryPaths) {
+      core.addPath(cachedBinaryPath)
+      core.info(`Added the tool cached binary at ${cachedBinaryPath} to PATH`)
     }
   } catch (error) {
-    core.setFailed(`Error occured while adding binaries to PATH: ${error}`)
+    core.setFailed(
+      `Error occured while adding tool cached binaries to PATH: ${error}`
+    )
     process.exit(1)
   }
 }

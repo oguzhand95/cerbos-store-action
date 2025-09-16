@@ -49,6 +49,6 @@ export default (): Environment => {
   }
 
   env = Validate(env)
-  core.info(`Environment is parsed as ${env}`)
+  core.info(`Environment is parsed as ${JSON.stringify(env)}`)
   return env
 }

@@ -7,6 +7,11 @@ inputs:
     description: 'The GitHub token to use'
     required: false
 
+  version:
+    description: 'Cerbosctl version to download if not exists in the tool cache already'
+    required: true
+    default: 'latest'
+
 runs:
   using: 'node20'
   main: './dist/index.js'
