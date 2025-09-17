@@ -54681,6 +54681,7 @@ const download_ValidateArgs = (args) => {
     }
     let extractedAsset = '';
     try {
+        lib_core.info(`Downloading the asset from URL ${args.asset.url}`);
         const asset = await tool_cache.downloadTool(args.asset.url);
         extractedAsset = await tool_cache.extractTar(asset);
         lib_core.info(`Successfully extracted downloaded asset to ${extractedAsset}`);

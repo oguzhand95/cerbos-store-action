@@ -2,13 +2,16 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import {describe, it} from 'node:test'
-import { Environment, Validate as ValidateEnvironment } from '../src/environment'
+import {Environment, Validate as ValidateEnvironment} from '../src/environment'
 
-export const createEnvironment = (platform: string, architecture: string): Environment => {
-    return {
-        architecture,
-        platform
-    };
+export const createEnvironment = (
+  platform: string,
+  architecture: string
+): Environment => {
+  return {
+    architecture,
+    platform
+  }
 }
 
 describe('Validate function', () => {

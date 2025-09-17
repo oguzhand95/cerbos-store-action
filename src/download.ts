@@ -43,6 +43,7 @@ export default async (args: DownloadArgs): Promise<void> => {
 
   let extractedAsset = ''
   try {
+    core.info(`Downloading the asset from URL ${args.asset.url}`)
     const asset = await tc.downloadTool(args.asset.url)
     extractedAsset = await tc.extractTar(asset)
 

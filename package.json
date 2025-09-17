@@ -15,11 +15,11 @@
     "build": "rm -rf dist && ncc build -o dist src/main.ts",
     "eslint:run": "NODE_OPTIONS=--max-old-space-size=3072 eslint --max-warnings=0",
     "lint": "pnpm run all:parallel 'pnpm:lint:check:*'",
-    "lint:check:eslint": "pnpm run eslint:run src",
-    "lint:check:prettier": "prettier --check src",
+    "lint:check:eslint": "pnpm run eslint:run src tests",
+    "lint:check:prettier": "prettier --check src tests",
     "lint:fix": "pnpm run lint:fix:eslint && pnpm run lint:fix:prettier",
-    "lint:fix:eslint": "pnpm run eslint:run --fix src",
-    "lint:fix:prettier": "prettier --write src",
+    "lint:fix:eslint": "pnpm run eslint:run --fix src tests",
+    "lint:fix:prettier": "prettier --write src tests",
     "test": "glob -c \"node --import tsx --no-warnings --test\" \"./tests/**/*.test.ts\""
   },
   "repository": {
