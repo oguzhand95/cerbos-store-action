@@ -9,6 +9,7 @@ import {HttpsProxyAgent} from 'https-proxy-agent'
 import * as z from 'zod'
 
 const SchemaArgs = z.object({
+  binaries: z.array(z.string()),
   githubToken: z.string(),
   version: z.union([
     z.literal(''),
@@ -22,6 +23,7 @@ const SchemaArgs = z.object({
 })
 
 interface SetupArgs {
+  binaries: string[]
   githubToken: string
   version: string
 }
@@ -52,6 +54,6 @@ export default async (args: SetupArgs) => {
       octokit: octokit,
       version: args.version
     }),
-    binaries: ['cerbosctl']
+    binaries: args.binaries
   })
 }

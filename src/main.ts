@@ -14,6 +14,7 @@ async function run(): Promise<void> {
   const version = core.getInput('version')
 
   Setup({
+    binaries: ['cerbosctl'],
     githubToken: githubToken,
     version: version
   })

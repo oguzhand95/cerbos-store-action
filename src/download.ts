@@ -4,6 +4,7 @@
 import * as path from 'node:path'
 import {Asset, Schema as AssetSchema} from './asset'
 import * as core from '@actions/core'
+import * as io from '@actions/io'
 import * as tc from '@actions/tool-cache'
 import * as z from 'zod'
 
@@ -26,13 +27,44 @@ export default async (args: DownloadArgs): Promise<void> => {
 
   const binariesToDownload = []
   for (const binary of args.binaries) {
+    let which = ''
+    try {
+      which = await io.which(binary, true)
+    } catch (e) {
+      const err = e as Error
+      if (!err.message.startsWith('Unable to locate executable file')) {
+        core.setFailed(JSON.stringify(err))
+        process.exit(1)
+      }
+    }
+
+    if (!which) {
+      core.info(`Failed to find binary ${binary} in PATH`)
+    }
+
     const cached = tc.find(binary, args.asset.version)
-    if (cached !== '' && cached !== undefined && cached !== null) {
-      core.info(`Found the tool cached binary ${binary} at ${cached}`)
-      core.addPath(cached)
-    } else {
-      core.info(`Failed to find the tool cached binary ${binary}`)
+    if (!cached) {
+      core.info(`Failed to find binary ${binary} in tool cache`)
+    }
+
+    if (!cached && !which) {
+      core.info(`Adding the ${binary} to the list of binaries to download`)
       binariesToDownload.push(binary)
+    } else if (cached && !which) {
+      core.info(
+        `Adding the binary ${binary} already available in the tool cache to PATH`
+      )
+      core.addPath(cached)
+    } else if (!cached && which) {
+      core.info(
+        `Removing the binary ${binary} from PATH and adding it to the list of binaries to (re)download`
+      )
+      io.rmRF(which)
+      binariesToDownload.push(binary)
+    } else {
+      core.info(
+        `Skipping the binary ${binary} as it is already in the tool cache and available in PATH`
+      )
     }
   }
 
@@ -69,12 +101,12 @@ export default async (args: DownloadArgs): Promise<void> => {
       cachedBinaryPaths.push(cachedBinaryPath)
 
       core.info(
-        `The binary ${binary} at ${cachedBinaryPath} is added to tool cache`
+        `The binary ${binary} at ${cachedBinaryPath} is added to the tool cache`
       )
     }
   } catch (error) {
     core.setFailed(
-      `Error occured while adding binaries to tool cache: ${error}`
+      `Error occured while adding binaries to the tool cache: ${error}`
     )
     process.exit(1)
   }
@@ -82,11 +114,13 @@ export default async (args: DownloadArgs): Promise<void> => {
   try {
     for (const cachedBinaryPath of cachedBinaryPaths) {
       core.addPath(cachedBinaryPath)
-      core.info(`Added the tool cached binary at ${cachedBinaryPath} to PATH`)
+      core.info(
+        `Added the binary ${cachedBinaryPath} from the tool cache to PATH`
+      )
     }
   } catch (error) {
     core.setFailed(
-      `Error occured while adding tool cached binaries to PATH: ${error}`
+      `Error occured while adding binaries from the tool cache to PATH: ${error}`
     )
     process.exit(1)
   }

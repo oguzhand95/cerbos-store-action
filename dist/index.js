@@ -54644,11 +54644,14 @@ const asset_Validate = (asset) => {
 
 ;// CONCATENATED MODULE: external "node:path"
 const external_node_path_namespaceObject = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:path");
+// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+io@1.1.3/node_modules/@actions/io/lib/io.js
+var io = __nccwpck_require__(3357);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@actions+tool-cache@2.0.2/node_modules/@actions/tool-cache/lib/tool-cache.js
 var tool_cache = __nccwpck_require__(1631);
 ;// CONCATENATED MODULE: ./src/download.ts
 // Copyright 2021-2025 Zenauth Ltd.
 // SPDX-License-Identifier: Apache-2.0
+
 
 
 
@@ -54665,14 +54668,39 @@ const download_ValidateArgs = (args) => {
     args = download_ValidateArgs(args);
     const binariesToDownload = [];
     for (const binary of args.binaries) {
+        let which = '';
+        try {
+            which = await io.which(binary, true);
+        }
+        catch (e) {
+            const err = e;
+            if (!err.message.startsWith('Unable to locate executable file')) {
+                lib_core.setFailed(JSON.stringify(err));
+                process.exit(1);
+            }
+        }
+        if (!which) {
+            lib_core.info(`Failed to find binary ${binary} in PATH`);
+        }
         const cached = tool_cache.find(binary, args.asset.version);
-        if (cached !== '' && cached !== undefined && cached !== null) {
-            lib_core.info(`Found the tool cached binary ${binary} at ${cached}`);
+        if (!cached) {
+            lib_core.info(`Failed to find binary ${binary} in tool cache`);
+        }
+        if (!cached && !which) {
+            lib_core.info(`Adding the ${binary} to the list of binaries to download`);
+            binariesToDownload.push(binary);
+        }
+        else if (cached && !which) {
+            lib_core.info(`Adding the binary ${binary} already available in the tool cache to PATH`);
             lib_core.addPath(cached);
         }
-        else {
-            lib_core.info(`Failed to find the tool cached binary ${binary}`);
+        else if (!cached && which) {
+            lib_core.info(`Removing the binary ${binary} from PATH and adding it to the list of binaries to (re)download`);
+            io.rmRF(which);
             binariesToDownload.push(binary);
+        }
+        else {
+            lib_core.info(`Skipping the binary ${binary} as it is already in the tool cache and available in PATH`);
         }
     }
     if (binariesToDownload.length === 0) {
@@ -54697,21 +54725,21 @@ const download_ValidateArgs = (args) => {
             const binaryPath = external_node_path_namespaceObject.join(extractedAsset, binary);
             const cachedBinaryPath = await tool_cache.cacheFile(binaryPath, binary, binary, args.asset.version);
             cachedBinaryPaths.push(cachedBinaryPath);
-            lib_core.info(`The binary ${binary} at ${cachedBinaryPath} is added to tool cache`);
+            lib_core.info(`The binary ${binary} at ${cachedBinaryPath} is added to the tool cache`);
         }
     }
     catch (error) {
-        lib_core.setFailed(`Error occured while adding binaries to tool cache: ${error}`);
+        lib_core.setFailed(`Error occured while adding binaries to the tool cache: ${error}`);
         process.exit(1);
     }
     try {
         for (const cachedBinaryPath of cachedBinaryPaths) {
             lib_core.addPath(cachedBinaryPath);
-            lib_core.info(`Added the tool cached binary at ${cachedBinaryPath} to PATH`);
+            lib_core.info(`Added the binary ${cachedBinaryPath} from the tool cache to PATH`);
         }
     }
     catch (error) {
-        lib_core.setFailed(`Error occured while adding tool cached binaries to PATH: ${error}`);
+        lib_core.setFailed(`Error occured while adding binaries from the tool cache to PATH: ${error}`);
         process.exit(1);
     }
 });
@@ -54728,6 +54756,7 @@ var dist = __nccwpck_require__(4708);
 
 
 const setup_SchemaArgs = object({
+    binaries: array(schemas_string()),
     githubToken: schemas_string(),
     version: union([
         literal(''),
@@ -54759,7 +54788,7 @@ const setup_ValidateArgs = (args) => {
             octokit: octokit,
             version: args.version
         }),
-        binaries: ['cerbosctl']
+        binaries: args.binaries
     });
 });
 
@@ -54775,6 +54804,7 @@ async function run() {
     }
     const version = lib_core.getInput('version');
     setup({
+        binaries: ['cerbosctl'],
         githubToken: githubToken,
         version: version
     });
