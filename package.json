@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "private": true,
   "description": "A GitHub action to upload Cerbos policies to Cerbos Hub stores",
-  "exports": "./lib/main.js",
   "type": "module",
   "packageManager": "pnpm@10.16.1+sha512.0e155aa2629db8672b49e8475da6226aa4bdea85fdcdfdc15350874946d4f3c91faaf64cbdc4a5d1ab8002f473d5c3fcedcd197989cf0390f9badd3c04678706",
   "engines": {
@@ -33,8 +32,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@actions/core": "^1.11.1",
-    "@actions/io": "^1.1.3",
-    "@actions/tool-cache": "^2.0.2",
+    "cerbos-actions-common": "github:cerbos/cerbos-actions-common#0.0.4",
     "https-proxy-agent": "^7.0.6",
     "octokit": "^5.0.3",
     "zod": "^4.1.8"

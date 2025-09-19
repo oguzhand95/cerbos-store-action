@@ -2,7 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as core from '@actions/core'
-import Setup from './setup'
+import * as common from 'cerbos-actions-common'
+import {HttpsProxyAgent} from 'https-proxy-agent'
+import {Octokit} from 'octokit'
 
 async function run(): Promise<void> {
   const githubToken = core.getInput('github_token')
@@ -11,11 +13,26 @@ async function run(): Promise<void> {
       `The action input 'github_token' is unavailable. Stricter rate limiting will be applied by GitHub.`
     )
   }
+
   const version = core.getInput('version')
 
-  Setup({
+  const octokit = new Octokit({
+    auth: githubToken,
+    request: {
+      agent: process.env.http_proxy
+        ? new HttpsProxyAgent(process.env.http_proxy)
+        : undefined,
+      fetch
+    },
+    userAgent: process.env['GITHUB_REPOSITORY']
+      ? process.env['GITHUB_REPOSITORY']
+      : 'cerbos-store-action'
+  })
+
+  common.setup({
     binaries: ['cerbosctl'],
     githubToken: githubToken,
+    octokit: octokit,
     version: version
   })
 }
