@@ -3,8 +3,8 @@ on:
   pull_request:
 
 jobs:
-  lint-build-test-and-use:
-    name: Lint, Build, Test, Check and Use
+  lint-build-check-test-and-use:
+    name: Lint, Build, Check, Test and Use
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
