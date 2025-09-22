@@ -1,5 +1,5 @@
 name: 'Cerbos Store Action'
-description: 'Uploads policies to Cerbos Hub stores'
+description: 'Uploads Cerbos policies to Cerbos Hub stores'
 author: 'Cerbos'
 
 inputs:
