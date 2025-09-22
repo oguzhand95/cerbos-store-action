@@ -12,8 +12,8 @@ importers:
         specifier: ^1.11.1
         version: 1.11.1
       cerbos-actions-common:
-        specifier: github:cerbos/cerbos-actions-common#0.0.7
-        version: https://codeload.github.com/cerbos/cerbos-actions-common/tar.gz/ed769e0333bbbe32a4e9a9500c572c91cc20ab14
+        specifier: github:cerbos/cerbos-actions-common#0.0.8
+        version: https://codeload.github.com/cerbos/cerbos-actions-common/tar.gz/8d72b7a3bf8b2dc579ea758cd0b8c7213f846633
       https-proxy-agent:
         specifier: ^7.0.6
         version: 7.0.6
@@ -547,8 +547,8 @@ packages:
     resolution: {integrity: sha512-P8BjAsXvZS+VIDUI11hHCQEv74YT67YUi5JJFNWIqL235sBmjX4+qx9Muvls5ivyNENctx46xQLQ3aTuE7ssaQ==}
     engines: {node: '>=6'}
 
-  cerbos-actions-common@https://codeload.github.com/cerbos/cerbos-actions-common/tar.gz/ed769e0333bbbe32a4e9a9500c572c91cc20ab14:
-    resolution: {tarball: https://codeload.github.com/cerbos/cerbos-actions-common/tar.gz/ed769e0333bbbe32a4e9a9500c572c91cc20ab14}
+  cerbos-actions-common@https://codeload.github.com/cerbos/cerbos-actions-common/tar.gz/8d72b7a3bf8b2dc579ea758cd0b8c7213f846633:
+    resolution: {tarball: https://codeload.github.com/cerbos/cerbos-actions-common/tar.gz/8d72b7a3bf8b2dc579ea758cd0b8c7213f846633}
     version: 0.0.0
     engines: {node: 24.8.0, pnpm: 10.16.1}
 
@@ -1553,7 +1553,7 @@ snapshots:
 
   callsites@3.1.0: {}
 
-  cerbos-actions-common@https://codeload.github.com/cerbos/cerbos-actions-common/tar.gz/ed769e0333bbbe32a4e9a9500c572c91cc20ab14:
+  cerbos-actions-common@https://codeload.github.com/cerbos/cerbos-actions-common/tar.gz/8d72b7a3bf8b2dc579ea758cd0b8c7213f846633:
     dependencies:
       '@actions/core': 1.11.1
       '@actions/io': 1.1.3
