@@ -14,7 +14,24 @@ async function run(): Promise<void> {
     )
   }
 
-  const version = core.getInput('version')
+  const storeID = core.getInput('store_id')
+  const clientID = core.getInput('client_id')
+  const clientSecret = core.getInput('client_secret')
+  if (storeID === '' || (clientID === '' && clientSecret === '')) {
+    core.setFailed(
+      "The action input 'store_id', 'client_id' and 'client_secret' must be specified"
+    )
+    process.exit(1)
+  }
+
+  const fromRevision = core.getInput('from_revision')
+  const toRevision = core.getInput('to_revision')
+  if (fromRevision === '' || toRevision === '') {
+    core.setFailed(
+      "The action input 'from_revision' and 'to_revision' must be specified"
+    )
+    process.exit(1)
+  }
 
   const octokit = new Octokit({
     auth: githubToken,
@@ -33,7 +50,16 @@ async function run(): Promise<void> {
     binaries: ['cerbosctl'],
     githubToken: githubToken,
     octokit: octokit,
-    version: version
+    version: core.getInput('version')
+  })
+
+  common.upload({
+    clientID: clientID,
+    clientSecret: clientSecret,
+    storeID: storeID,
+    fromRevision: fromRevision,
+    toRevision: toRevision,
+    subDir: core.getInput('subdir')
   })
 }
 

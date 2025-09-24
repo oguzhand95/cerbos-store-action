@@ -11,7 +11,24 @@ Cerbos helps you super-charge your authorization implementation by writing conte
 
 ## Usage
 
-WORK IN PROGRESS
+This action requires `cerbosctl` to be installed.
+
+If [cerbos-setup-action](https://github.com/cerbos/cerbos-setup-action) already ran in the workflow, a version of `cerbos` and `cerbosctl` binaries will be available to use.
+This action is going to check the available version and compare it against the version specified by the action input `version`.
+If the versions do not match or the [cerbos-setup-action](https://github.com/cerbos/cerbos-setup-action) is not run before, this action will install `cerbosctl` with the version specified by the action input `version`.
+
+```yaml
+- name: Upload cerbos policies
+  uses: cerbos/cerbos-store-action@v1
+  with:
+    github_token: ${{ secrets.GITHUB_TOKEN }}
+    store_id: ${{ secrets.CERBOS_HUB_STORE_ID }}
+    client_id: ${{ secrets.CERBOS_HUB_CLIENT_ID }}
+    client_secret: ${{ secrets.CERBOS_HUB_CLIENT_SECRET }}
+    from_revision: HEAD~1
+    to_revision: HEAD
+    subdir: policies # optional subdirectory of Cerbos policies
+```
 
 ## Development
 
